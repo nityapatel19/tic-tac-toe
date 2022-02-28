@@ -1,55 +1,70 @@
 # importing enum for enumerations
-import enum
-
-SIZE = 3
-solutions = ((0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8), (2, 4, 6))
+from enum import Enum
+from typing import List
 
 
-# creating enumerations using class
-class Player(enum.Enum):
+class Status(Enum):
     DRAW = 0
     PLAYER_ONE = 1
     PLAYER_TWO = 2
 
 
-def print_grid(M: list[str]):
+SIZE = 3
+solutions = ((0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8), (2, 4, 6))
+
+
+def print_grid(grid: List[str]):
     print(f"""
- {M[0]} | {M[1]} | {M[2]} 
+ {grid[0]} | {grid[1]} | {grid[2]} 
 -----------
- {M[3]} | {M[4]} | {M[5]} 
+ {grid[3]} | {grid[4]} | {grid[5]} 
 -----------
- {M[6]} | {M[7]} | {M[8]} 
+ {grid[6]} | {grid[7]} | {grid[8]} 
 """)
 
 
-def check_winner(grid: list[str]):
-    if any(all([grid[i] == 'x' for i in s]) for s in solutions):
-        return Player.PLAYER_ONE
-    elif any(all([grid[i] == 'o' for i in s]) for s in solutions):
-        return Player.PLAYER_TWO
+def check_winner(grid: List[str]):
+    if any(all([grid[i] == 'X' for i in s]) for s in solutions):
+        return Status.PLAYER_ONE
+    elif any(all([grid[i] == 'O' for i in s]) for s in solutions):
+        return Status.PLAYER_TWO
     elif ' ' not in grid:
-        return Player.DRAW
+        return Status.DRAW
     else:
         return None
-    # if (
-    # any([all([M[i][j] == 'x' for j in range(3)]) or all([M[j][i] == 'x' for j in range(3)]) for i in range(3)])) or (
-    #         all([M[i][i] == 'x' for i in range(3)]) or all([M[i][2 - i] == 'x' for i in range(3)])):
-    #     return Player.PLAYER_ONE
-    # elif (
-    # any([all([M[i][j] == 'y' for j in range(3)]) or all([M[j][i] == 'y' for j in range(3)]) for i in range(3)])) or (
-    #         all([M[i][i] == 'y' for i in range(3)]) or all([M[i][2 - i] == 'y' for i in range(3)])):
-    #     return Player.PLAYER_TWO
-    # elif 0 == 0:
-    #     return Player.DRAW
-    # else:
-    #     return None
 
 
-def take_turn(M: list[str], player: Player):
-    pass
+def take_turn(grid: List[str], player: str, inp: List[int]) -> Status:
+    grid[inp[0] * 3 + inp[1]] = player
+    return check_winner(grid)
 
 
-M = [' '] * SIZE * SIZE
-# M = ['x', 'y', 'x', 'y', 'x', 'x', 'x', 'y', 'y']
-print_grid(M)
-print(check_winner(M))
+def validate_input(grid: List[str], s: str):
+    s = list(map(int, s.strip().split()))
+    if all([i in range(3) for i in s]) and len(s) == 2 and grid[s[0] * 3 + s[1]] == ' ':
+        return s
+    else:
+        return False
+
+
+if __name__ == '__main__':
+    M = [' '] * SIZE * SIZE
+
+    winner = None
+    player = ['X', 'O']
+    while winner is None:
+        print_grid(M)
+
+        while not (
+                inp := validate_input(M, input(
+                    f'Player {player[0]}, take your turn (Enter coordinates separated by spaces): '))):
+            print("Invalid Input. Try again:")
+
+        winner = take_turn(M, player[0], inp)
+        player.append(player.pop(0))
+
+    print_grid(M)
+    if winner.name == "DRAW":
+        print("The game is a draw.")
+    else:
+        print(f"{winner.name} wins!!!")
