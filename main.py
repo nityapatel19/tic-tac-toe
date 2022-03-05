@@ -1,6 +1,7 @@
 # importing enum for enumerations
 from enum import Enum
 from typing import List
+import random
 
 
 class Status(Enum):
@@ -47,24 +48,94 @@ def validate_input(grid: List[str], s: str):
         return False
 
 
-if __name__ == '__main__':
-    M = [' '] * SIZE * SIZE
-
+def player_vs_player():
+    grid = [' '] * SIZE * SIZE
     winner = None
     player = ['X', 'O']
     while winner is None:
-        print_grid(M)
+        print_grid(grid)
 
         while not (
-                inp := validate_input(M, input(
+                inp := validate_input(grid, input(
                     f'Player {player[0]}, take your turn (Enter coordinates separated by spaces): '))):
             print("Invalid Input. Try again:")
 
-        winner = take_turn(M, player[0], inp)
+        winner = take_turn(grid, player[0], inp)
         player.append(player.pop(0))
 
-    print_grid(M)
+    print_grid(grid)
     if winner.name == "DRAW":
         print("The game is a draw.")
     else:
         print(f"{winner.name} wins!!!")
+
+
+def player_vs_computer_easy():
+    grid = [' '] * SIZE * SIZE
+    empty_places = ["0 0", "0 1", "0 2", "1 0", "1 1", "1 2", "2 0", "2 1", "2 2"]
+    winner = None
+    player = ['X', 'O']
+    while winner is None:
+        print_grid(grid)
+
+        if player[0] == 'X':
+            while not (
+                    inp := validate_input(grid, input(
+                        f'Player {player[0]}, take your turn (Enter coordinates separated by spaces): '))):
+                print("Invalid Input. Try again:")
+
+            winner = take_turn(grid, player[0], inp)
+
+        else:
+            choice = random.choice(empty_places)
+            turn = validate_input(grid, choice)
+            winner = take_turn(grid, player[0], turn)
+            empty_places.remove(choice)
+
+        player.append(player.pop(0))
+
+    print_grid(grid)
+    if winner.name == "DRAW":
+        print("The game is a draw.")
+    elif winner == Status.PLAYER_ONE:
+        print("Congratulations, you won!!!")
+    else:
+        print("You lost, better luck next time.")
+
+
+def player_vs_computer_medium():
+    ...
+
+
+def player_vs_computer_hard():
+    ...
+
+
+def player_vs_computer():
+    level = input("Enter level of difficulty (1-3), anything else to quit: ")
+    if level == '1':
+        player_vs_computer_easy()
+    elif level == '2':
+        player_vs_computer_medium()
+    elif level == '3':
+        player_vs_computer_hard()
+    else:
+        print("Invalid Input.")
+
+
+if __name__ == '__main__':
+    print("Welcome to Tic-Tac-Toe!")
+    print("Player 1 is X and Player 2 is O")
+    play = input("Press p to play, anything else to quit: ").lower()
+    while play == 'p':
+        mode = input("Press 1 for Player vs Player, 2 for Player vs Computer: ")
+        if mode == '1':
+            player_vs_player()
+            play = input("Press p to play again, q to quit: ").lower()
+
+        elif mode == '2':
+            player_vs_computer()
+            play = input("Press p to play again, anything else to quit: ").lower()
+
+        else:
+            print("Invalid Input.")
