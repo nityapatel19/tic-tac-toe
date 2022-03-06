@@ -79,19 +79,16 @@ def player_vs_computer_easy():
         print_grid(grid)
 
         if player[0] == 'X':
-            while not (
-                    inp := validate_input(grid, input(
-                        f'Player {player[0]}, take your turn (Enter coordinates separated by spaces): '))):
-                print("Invalid Input. Try again:")
-
-            winner = take_turn(grid, player[0], inp)
+            choice = input(f'Player {player[0]}, take your turn (Enter coordinates separated by spaces): ')
+            while not (turn := validate_input(grid, choice)):
+                choice = input("Invalid Input. Try again: ")
 
         else:
             choice = random.choice(empty_places)
             turn = validate_input(grid, choice)
-            winner = take_turn(grid, player[0], turn)
-            empty_places.remove(choice)
 
+        winner = take_turn(grid, player[0], turn)
+        empty_places.remove(choice)
         player.append(player.pop(0))
 
     print_grid(grid)
