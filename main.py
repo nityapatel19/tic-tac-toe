@@ -101,6 +101,20 @@ def player_vs_computer_easy():
 
 
 def player_vs_computer_medium():
+    # grid = [' '] * SIZE * SIZE
+    # empty_places = ["0 0", "0 1", "0 2", "1 0", "1 1", "1 2", "2 0", "2 1", "2 2"]
+    # winner = None
+    # player = ['X', 'O']
+    # while winner is None:
+    #     print_grid(grid)
+    #
+    #     if player[0] == 'X':
+    #         choice = input(f'Player {player[0]}, take your turn (Enter coordinates separated by spaces): ')
+    #         while not (turn := validate_input(grid, choice)):
+    #             choice = input("Invalid Input. Try again: ")
+    #
+    #     else:
+    #         if
     ...
 
 
